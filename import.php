@@ -5,21 +5,24 @@ require "netting/connect.php";
   if(isset($_POST['buttomImport'])){
       copy($_FILES['jsonFile']['tmp_name'],'jsonFiles/'.$_FILES['jsonFile']['name']);
       $data=file_get_contents('jsonFiles/'.$_FILES['jsonFile']['name']);
-      $users=json_decode($data);
-      foreach ($users as $user){
-         $stmt=$db->query("SELECT * FROM id FROM users WHERE user_name='".$user->user_name."'");
+      $products=json_decode($data);
+      foreach ($products as $product){
+         $stmt=$db->query("SELECT * FROM id FROM products WHERE product_name='".$product->product_name."'");
 
          if(! $stmt){
-          $db->prepare('INSERT INTO users(user_name,password) values(?,?)' )->execute([
-          $user->user_name,
-          md5("root"),
+          $db->prepare('INSERT INTO products(product_uniqid,product_name,price,content) values(?,?,?,?)' )->execute([
+          $product->product_uniqid,
+          $product->product_name,
+          $product->price,
+          $product->content
+          
       
           ]);
-          foreach($user->categories as $category){
+          foreach($product->categories as $category){
 
-            $categoryId=$db->prepare("INSERT INTO categories(category_name,user_id) values(?,?)")->execute([
+            $categoryId=$db->prepare("INSERT INTO categories(category_uniqid,category_name,product_id) values(?,?,?)")->execute([
               $category->category_name,
-              $userId
+              $category->category_uniqid
             ]);
           }
          }

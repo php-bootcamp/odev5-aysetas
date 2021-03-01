@@ -1,18 +1,27 @@
 <?php
 
 require "netting/connect.php";
-$output=[];
+$output = [];
 
-$users=$db->query("SELECT * FROM users")->fetchAll(PDO::FETCH_OBJ);
-foreach($users as $user){
-    $categories=$db->query("SELECT * FROM categories WHERE user_id=.$user->id")->fetchAll(PDO::FETCH_OBJ);
-    $output[]=[
-        "user_name"=>$user->user_name,
-        "categories"=>$categories
+$products = $db->prepare("SELECT * FROM products");
+$products->execute();
+$data = $products->fetchAll(PDO::FETCH_OBJ);
+
+foreach ($data as $product) {
+    
+    $categories = $db->prepare("SELECT category_uniqid, category_name FROM categories WHERE category_id =".$product->category_id);
+    $categories->execute();
+    $categoriesData = $categories->fetchAll(PDO::FETCH_OBJ);
+
+    $output[] = [
+        "uniqid" => $product->product_uniqid,
+        "name" => $product->product_name,
+        "price" => $product->product_price,
+        "content" => $product->product_content,
+        "category" => $categoriesData
     ];
-
 }
-header("Content-disposition:attachment; filename=users.json");
+header("Content-disposition:attachment; filename=products.json");
 header("Content-type:application/json");
 echo json_encode($output, JSON_PRETTY_PRINT);
 

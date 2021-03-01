@@ -1,0 +1,12 @@
+[
+    {
+        "uniqid": "214a45b043146",
+        "name": "mobile",
+        "price": 10,
+        "content": "iyi bir ürün",
+        "category": {
+            "uniqid": "85b7a301512b0",
+            "name": "Category 1"
+        }
+   }
+]
